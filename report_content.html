@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <?!= include('report.css') ?>
+
+	<style type="text/css">
+
+    @media all {
+        .page-break { display: none; }
+    }
+
+    @media print {
+      @page {
+        margin-top: 1cm;
+        margin-bottom: 1cm;
+        margin-left: 2cm;
+        margin-right: 2cm;
+        width: 100%;
+      }
+
+      body {
+        font-family: "Arial", "Book Antiqua", Palatino, serif;
+        font-size: 9pt;
+        color: #000;
+      }
+      
+      table {
+        width: 100%;
+      }
+      
+      table td {
+        padding: 1px;
+      }
+      
+      .spacer_new_group {
+          margin-top: 25px;
+          background-color: #D0ECE7;
+      }
+      
+      .bolded_header {
+          padding: 2px;
+      }
+      
+      }
+      
+      
+	</style>
+</head>
+
+<body onload="window.focus().print();">
+<h2 class="center-align">Zbór Bytom-Radzionków <?=title?></h2>
+    <table>
+    <? for (var i=0; i < congregation_stats.length; i++) { ?>
+      <? if(congregation_stats[i][0].length == 0) 
+        continue 
+        var bold_row = false
+      ?>
+      <tr id="<?=congregation_stats[i][0]?>">
+          <? for (var j=0; j < congregation_stats[i].length; j++) { ?>
+              <?
+                var header_class = ""
+                var center_text = ""
+                var center_header = ""
+                var header_bg_color = ""
+
+                var item = congregation_stats[i][j]
+                if (! isNaN(item) && j > 0 && !congregation_stats[i][0].match("ŚREDNIA"))
+                  item = Number(item).toFixed(0)
+                if (! isNaN(item) && congregation_stats[i][0].match("ŚREDNIA") &&  j > 1) {
+                  item = Number(item).toFixed(2)
+                  center_text = "center-align"
+                } 
+                if (isNaN(item))
+                  header_class = "bolded_header"
+                if (j > 0)
+                  center_header = "center-align"
+                if ( isNaN(congregation_stats[i][1]))
+                    header_bg_color = "header_bg_color"
+              ?>
+            <td class="<?= header_class ?> <?= center_text ?> <?= center_header ?> <?= header_bg_color ?>"><?= item ?></td>
+                <? } ?>
+            </tr>
+          <? } ?>
+     </table>
+      <table>
+      <? for (var i=0; i < publishers_by_groups.length; i++) { ?>
+            <? 
+              var bold_row = false
+              var new_group_spacer = false
+              var center_header = false
+              var smaller_font = false
+              var more_precision = false
+              
+              if (publishers_by_groups[i][1].length == 0) 
+                  continue 
+              if (typeof publishers_by_groups[i][1] == "string" && publishers_by_groups[i][1].match("GRUPA")) {
+              
+              ?>  <tr style="border-bottom: none;"><td class="group_spacer" colspan="7"></td></tr> <?
+                  new_group_spacer = true
+                  center_header = true
+              }
+              if (typeof publishers_by_groups[i][1] == "string" && (publishers_by_groups[i][1].match("GRUPA") || publishers_by_groups[i][1].match("SUMA") || publishers_by_groups[i][1].match("ŚREDNIA")))
+                  bold_row = true
+              if (typeof publishers_by_groups[i][1] == "string" && (publishers_by_groups[i][1].match("SUMA") || publishers_by_groups[i][1].match("ŚREDNIA")))
+                  smaller_font = true 
+              if (typeof publishers_by_groups[i][1] == "string" && (publishers_by_groups[i][1].match("ŚREDNIA")))
+                  more_precision = true 
+            ?>
+            <tr>
+              <? for (var j=0; j < publishers_by_groups[i].length; j++) { ?>
+                  <?
+                      var header_class = ""
+                      var spacer_class = ""
+                      var center_header_class = ""
+                      var smaller_font_class = ""
+                      var center_text_class = ""
+                     
+                      if (new_group_spacer)
+                          spacer_class = "spacer_new_group"
+                      if (bold_row)
+                          header_class = "bolded_header"
+                      if (center_header && j > 1)
+                          center_header_class = "center-align"
+                      if (smaller_font)
+                          smaller_font_class = "smaller_font"
+                      var item = publishers_by_groups[i][j]
+                      if (! isNaN(item) && j > 1 && !more_precision) {
+                          item = Number(item).toFixed(0)
+                          center_text_class = "center-align"
+                      } else if (! isNaN(item) && j > 1 ) {
+                          item = Number(item).toFixed(2)
+                          center_text_class = "center-align"
+                      }                    
+                      
+                  ?>
+                  <td class="<?=header_class?> <?=center_text_class?> <?=spacer_class?> <?=center_header_class?> <?=smaller_font_class?>" style=""><?= item ?></td>
+              <? } ?>
+            </tr>
+        <? } ?>
+      </table>
+</body>
+
+</html>

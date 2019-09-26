@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <base target="_top">
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+    <script>
+      function onSuccess(obj, filename) {
+        var newWin = open('url','content_iframe');
+        newWin.document.write(obj);
+        
+        var action_type = $("input[name='action_type']:checked").val();
+        if (action_type == "download") {
+          const linkSource = "data:application/pdf;base64," + encodeURI(obj);
+          const downloadLink = newWin.document.createElement("a");
+          const fileName = filename + ".pdf";
+          
+          downloadLink.href = linkSource;
+          downloadLink.download = fileName;
+          document.body.appendChild(downloadLink)
+          downloadLink.click();
+          //
+          }
+        
+        if (action_type == "print") {
+            //newWin.print();
+            var newWin2 = open('url','content_iframe22');
+            newWin2.document.write(obj);
+        }
+        
+        $('#preloader').hide();
+        setTimeout(function (downloadLink) {google.script.host.close()}, 2000);
+         //google.script.host.close();
+      }
+
+     function generate_report(month_name) {
+          $('#preloader').show();
+          var action_type = $("input[name='action_type']:checked").val();
+          google.script.run.withSuccessHandler( (function (obj) {onSuccess(obj, month_name)})).generate_monthly_report(month_name, action_type);
+     }
+    </script>
+
+    <style>
+      div.progress {
+          background-color: #F2F4F4;
+      }
+      div.progress .indeterminate {
+          background-color: #AEB6BF;
+      }      
+      
+    </style>
+  </head>
+  <body>
+      <iframe id="download" width="1" height="1" style="display:none"></iframe>
+      <iframe src="" name="content_iframe" style="display:none" sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-downloads-without-user-activation allow-modals"></iframe>
+       <div class="center-align">
+        <div class="progress" style="width:70%;margin-left:auto;margin-right:auto;display:none" id="preloader">
+          <div class="indeterminate"></div>
+        </div>
+      </div>
+      <p>
+        <label>
+          <input type="radio" name="action_type" checked="checked" value="download">
+          <span>Pobierz jako plik pdf</span>
+        </label>
+      </p>
+      <p>
+        <label>
+          <input type="radio" name="action_type" value="print">
+          <span>Drukuj bezporśrednio</span>
+        </label>
+      </p>
+      <div class="center-align" style="margin-top: 25px;">
+        <a onclick="generate_report('<?=active_sheet_name?>');" class="waves-effect waves-light btn">Wykonaj</a>
+      </div>
+</body>
+</html>
+
+
