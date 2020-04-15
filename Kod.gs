@@ -335,7 +335,7 @@ function r2a(range) {
 }
 
 function test()  {
-    generate_monthly_report("Luty", "download")
+    generate_monthly_report("Marzec  2020", "download")
 }
 
 function generate_monthly_report(act_sheet_name, action_type) {
@@ -352,7 +352,7 @@ function generate_monthly_report(act_sheet_name, action_type) {
   } 
   
   if (action_type == "download") {
-    var report_blob = report.evaluate().getBlob()
+    var report_blob = report.evaluate().getBlob();
     Logger.log(report.evaluate().getContent())
     var pdf = report_blob.getAs("application/pdf");
     return Utilities.base64Encode(pdf.getBytes())

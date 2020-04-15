@@ -107,6 +107,8 @@
                   smaller_font = true 
               if (typeof publishers_by_groups[i][1] == "string" && (publishers_by_groups[i][1].match("ŚREDNIA")))
                   more_precision = true 
+               
+              
             ?>
             <tr>
               <? for (var j=0; j < publishers_by_groups[i].length; j++) { ?>
@@ -126,8 +128,13 @@
                       if (smaller_font)
                           smaller_font_class = "smaller_font"
                       var item = publishers_by_groups[i][j]
+
                       if (! isNaN(item) && j > 1 && !more_precision) {
-                          item = Number(item).toFixed(0)
+                          if ( j == 4 && item > 0 && item < 1 ) {
+                              item = Number(item).toFixed(2)
+                          } else {
+                              item = Number(item).toFixed(0)
+                          }
                           center_text_class = "center-align"
                       } else if (! isNaN(item) && j > 1 ) {
                           item = Number(item).toFixed(2)
